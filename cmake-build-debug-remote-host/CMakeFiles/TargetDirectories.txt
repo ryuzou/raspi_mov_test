@@ -1,0 +1,3 @@
+/home/ubuntu/mov_test/cmake-build-debug-remote-host/CMakeFiles/rebuild_cache.dir
+/home/ubuntu/mov_test/cmake-build-debug-remote-host/CMakeFiles/edit_cache.dir
+/home/ubuntu/mov_test/cmake-build-debug-remote-host/CMakeFiles/mov_test.dir
