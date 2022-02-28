@@ -226,12 +226,6 @@ ProcessorCount_cmd_nproc:FILEPATH=/usr/bin/nproc
 //Path to a program.
 ProcessorCount_cmd_sysctl:FILEPATH=/usr/sbin/sysctl
 
-//Path to a library.
-WIRINGPI_LIBRARIES:FILEPATH=WIRINGPI_LIBRARIES-NOTFOUND
-
-//The directory containing a CMake configuration file for WiringPi.
-WiringPi_DIR:PATH=WiringPi_DIR-NOTFOUND
-
 //Value Computed by CMake
 mov_test_BINARY_DIR:STATIC=/home/ubuntu/mov_test/cmake-build-debug-remote-host
 

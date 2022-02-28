@@ -16,18 +16,6 @@ syslog.h
 stdlib.h
 -
 
-/home/ubuntu/mov_test/json11/json11.hpp
-string
--
-vector
--
-map
--
-memory
--
-initializer_list
--
-
 /home/ubuntu/mov_test/main.cpp
 iostream
 -
@@ -35,8 +23,24 @@ omni.h
 /home/ubuntu/mov_test/omni.h
 tcp.h
 /home/ubuntu/mov_test/tcp.h
-json11/json11.hpp
-/home/ubuntu/mov_test/json11/json11.hpp
+cstdio
+-
+sys/types.h
+-
+sys/stat.h
+-
+sys/ioctl.h
+-
+fcntl.h
+-
+termios.h
+-
+unistd.h
+-
+
+/home/ubuntu/mov_test/omni.cpp
+omni.h
+/home/ubuntu/mov_test/omni.h
 
 /home/ubuntu/mov_test/omni.h
 cmath
