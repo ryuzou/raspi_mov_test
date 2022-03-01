@@ -11,9 +11,70 @@
 #include <net/if.h>
 #include <sys/socket.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <unistd.h>
+
 #include <linux/can.h>
 
 
+#define SERIAL_PORT "/dev/ttyACM0"
+
+int main(int argc, char *argv[])
+{
+    unsigned char msg[] = "serial port open...\n";
+    unsigned char buf[9];             // バッファ
+    int fd;                             // ファイルディスクリプタ
+    struct termios tio;                 // シリアル通信設定
+    int baudRate = B115200;
+    int i;
+    int len;
+    int ret;
+    int size;
+
+    fd = open(SERIAL_PORT, O_RDWR);     // デバイスをオープンする
+    if (fd < 0) {
+        printf("open error\n");
+        return -1;
+    }
+
+    tio.c_cflag += CREAD;               // 受信有効
+    tio.c_cflag += CLOCAL;              // ローカルライン（モデム制御なし）
+    tio.c_cflag += CS8;                 // データビット:8bit
+    tio.c_cflag += 0;                   // ストップビット:1bit
+    tio.c_cflag += 0;                   // パリティ:None
+
+    cfsetispeed( &tio, baudRate );
+    cfsetospeed( &tio, baudRate );
+
+    cfmakeraw(&tio);                    // RAWモード
+
+    tcsetattr( fd, TCSANOW, &tio );     // デバイスに設定を行う
+
+    ioctl(fd, TCSETS, &tio);            // ポートの設定を有効にする
+
+    buf[0] = 0x01;
+    buf[1] = 0x02;
+    buf[2] = 0x03;
+    buf[3] = 0x04;
+    buf[4] = 0x05;
+    buf[5] = 0x06;
+    buf[6] = 0x07;
+    buf[7] = 0x08;
+    buf[8] = 0x09;
+    while(1) {
+        write(fd, buf, 9);
+        usleep(100);
+    }
+
+    close(fd);                              // デバイスのクローズ
+    return 0;
+}
+
+/*
 int main(int argc, char **argv) {
 
     //can init.
@@ -32,22 +93,22 @@ int main(int argc, char **argv) {
 
     union {
         float f;
-        uint8_t Data[4];
+        uint8_t Data[8];
     } data0{};
 
     union {
         float f;
-        uint8_t Data[4];
+        uint8_t Data[8];
     } data1{};
 
     union {
         float f;
-        uint8_t Data[4];
+        uint8_t Data[8];
     } data2{};
 
     union {
         float f;
-        uint8_t Data[4];
+        uint8_t Data[8];
     } data3{};
 
 
@@ -109,16 +170,16 @@ int main(int argc, char **argv) {
         data2.f = wheel_cal.Motor[2];
         data3.f = wheel_cal.Motor[3];
 
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 8; ++i) {
             frame0.data[i] = data0.Data[i];
         }
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 8; ++i) {
             frame1.data[i] = data1.Data[i];
         }
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 8; ++i) {
             frame2.data[i] = data2.Data[i];
         }
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < 8; ++i) {
             frame3.data[i] = data3.Data[i];
         }
 
@@ -169,4 +230,4 @@ int main(int argc, char **argv) {
     }
 
     return 0;
-}
+}*/
