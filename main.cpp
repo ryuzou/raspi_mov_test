@@ -14,8 +14,7 @@
 
 #include <linux/can.h>
 
-int main(int argc, char **argv) {
-
+int move_can(int radius, int degree){
     //can init.
 
     int s;
@@ -65,8 +64,6 @@ int main(int argc, char **argv) {
 
     // initial connection
     recieveData = tcp.recieve_lines();*/
-    int radius = std::stoi(argv[1]);
-    int degree = std::stoi(argv[2]);
 
     while (true) {
         char delm = ',';
@@ -121,6 +118,7 @@ int main(int argc, char **argv) {
                 break;
             }
         }
+        break;
     }
 
     if (close(s) < 0) {
@@ -128,5 +126,12 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    return 0;
+}
+
+int main(int argc, char **argv) {
+    move_can(100, 0);
+    sleep(2);
+    move_can(0, 0);
     return 0;
 }
