@@ -97,6 +97,12 @@
 		<Unit filename="/home/ubuntu/mov_test/tcp.h">
 			<Option target="mov_test"/>
 		</Unit>
+		<Unit filename="/home/ubuntu/mov_test/utils.cpp">
+			<Option target="mov_test"/>
+		</Unit>
+		<Unit filename="/home/ubuntu/mov_test/utils.h">
+			<Option target="mov_test"/>
+		</Unit>
 		<Unit filename="/home/ubuntu/mov_test/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

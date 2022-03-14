@@ -1,1 +1,1 @@
-/usr/bin/c++  -g   CMakeFiles/mov_test.dir/main.cpp.o CMakeFiles/mov_test.dir/omni.cpp.o  -o mov_test 
+/usr/bin/c++  -g   CMakeFiles/mov_test.dir/main.cpp.o CMakeFiles/mov_test.dir/omni.cpp.o CMakeFiles/mov_test.dir/utils.cpp.o  -o mov_test 
