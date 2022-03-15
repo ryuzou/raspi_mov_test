@@ -130,8 +130,11 @@ int move_can(int radius, int degree){
 }
 
 int main(int argc, char **argv) {
-    move_can(100, 0);
-    sleep(2);
-    move_can(0, 0);
+    while (1){
+        move_can(100, 0);
+        sleep(2);
+        move_can(0, 0);
+        break;
+    }
     return 0;
 }
