@@ -17,7 +17,7 @@
 
 using json = nlohmann::json;
 
-int move_can(int radius, int degree){
+int move_can(){
     //tcp connection setup.
     const char *connected_adder;
     std::string recieveData;
@@ -102,7 +102,7 @@ int move_can(int radius, int degree){
         }
         while (true){
             if (write(s, &frame2, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
-                perror("Write frame0");
+                perror("Write frame2");
                 usleep(100);
             } else{
                 break;
@@ -110,29 +110,17 @@ int move_can(int radius, int degree){
         }
         while (true){
             if (write(s, &frame3, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
-                perror("Write frame0");
+                perror("Write frame3");
                 usleep(100);
             } else{
                 break;
             }
         }
-        break;
     }
-
-    if (close(s) < 0) {
-        perror("Close");
-        return 1;
-    }
-
     return 0;
 }
 
 int main(int argc, char **argv) {
-    while (1){
-        move_can(100, 0);
-        sleep(2);
-        move_can(0, 0);
-        break;
-    }
+    move_can();
     return 0;
 }
