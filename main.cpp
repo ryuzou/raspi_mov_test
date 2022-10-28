@@ -2,6 +2,7 @@
 #include "omni.h"
 #include "tcp.h"
 #include "utils.h"
+#include "json.hpp"
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -14,9 +15,18 @@
 
 #include <linux/can.h>
 
-int move_can(int radius, int degree){
-    //can init.
+using json = nlohmann::json;
 
+int move_can(int radius, int degree){
+    //tcp connection setup.
+    const char *connected_adder;
+    std::string recieveData;
+    tcp tcp(8000);
+    tcp.receive_setup();
+    connected_adder = tcp.connect();
+    std::cout << "Connected from " << connected_adder << std::endl;
+
+    //can init.
     int s;
     struct sockaddr_can addr{};
     struct ifreq ifr{};
@@ -24,10 +34,10 @@ int move_can(int radius, int degree){
     struct can_frame frame1{};
     struct can_frame frame2{};
     struct can_frame frame3{};
-    frame0.can_id = 0x100;
-    frame1.can_id = 0x101;
-    frame2.can_id = 0x102;
-    frame3.can_id = 0x103;
+    frame0.can_id = 0x101;
+    frame1.can_id = 0x102;
+    frame2.can_id = 0x103;
+    frame3.can_id = 0x104;
     frame0.can_dlc = frame1.can_dlc = frame2.can_dlc = frame3.can_dlc = 8;
 
 
@@ -54,36 +64,24 @@ int move_can(int radius, int degree){
     float w = 0;
 
     wheel wheel_cal;
-    //tcp connection setup.
-    const char *connected_adder;
-    /*std::string recieveData;
-    tcp tcp(8000);
-    tcp.receive_setup();
-    connected_adder = tcp.connect();
-    std::cout << "Connected from " << connected_adder << std::endl;
 
     // initial connection
-    recieveData = tcp.recieve_lines();*/
+    recieveData = tcp.recieve_lines();
 
     while (true) {
-        char delm = ',';
-        /*recieveData = tcp.recieve_lines();
-        int counter = 0;
-        for (char ch: recieveData) {
-            if (ch == delm) {
-                radius = std::stoi(recieveData.substr(0, counter));
-                degree = std::stoi(recieveData.substr(counter + 1));
-            }
-            counter++;
-        }*/
-        wheel_cal.motor_main(radius, degree, w);
-        std::cout << wheel_cal.Motor[0] << "," << wheel_cal.Motor[1] << "," << wheel_cal.Motor[2] << ","
-                  << wheel_cal.Motor[3] << std::endl;
+        recieveData = tcp.recieve_lines();
+        json j = json::parse(recieveData);
 
-        convert_double_to_byte(wheel_cal.Motor[0], frame0.data);
-        convert_double_to_byte(wheel_cal.Motor[1], frame1.data);
-        convert_double_to_byte(wheel_cal.Motor[2], frame2.data);
-        convert_double_to_byte(wheel_cal.Motor[3], frame3.data);
+        double v1, v2, v3, v4;
+        v1 = double(j["paramaters"]["1"]["axis"]) * double(j["paramaters"]["1"]["ratio"])/100 * double(j["v1"]);
+        v2 = double(j["paramaters"]["2"]["axis"]) * double(j["paramaters"]["2"]["ratio"])/100 * double(j["v2"]);
+        v3 = double(j["paramaters"]["3"]["axis"]) * double(j["paramaters"]["3"]["ratio"])/100 * double(j["v3"]);
+        v4 = double(j["paramaters"]["4"]["axis"]) * double(j["paramaters"]["4"]["ratio"])/100 * double(j["v4"]);
+
+        convert_double_to_byte(v1, frame0.data);
+        convert_double_to_byte(v2, frame1.data);
+        convert_double_to_byte(v3, frame2.data);
+        convert_double_to_byte(v4, frame3.data);
 
 
         while (true){

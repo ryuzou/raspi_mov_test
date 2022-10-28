@@ -85,6 +85,12 @@
 		<Unit filename="/home/ubuntu/mov_test/errorhandling.h">
 			<Option target="mov_test"/>
 		</Unit>
+		<Unit filename="/home/ubuntu/mov_test/json.hpp">
+			<Option target="mov_test"/>
+		</Unit>
+		<Unit filename="/home/ubuntu/mov_test/json_fwd.hpp">
+			<Option target="mov_test"/>
+		</Unit>
 		<Unit filename="/home/ubuntu/mov_test/main.cpp">
 			<Option target="mov_test"/>
 		</Unit>

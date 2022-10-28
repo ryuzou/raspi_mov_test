@@ -5,7 +5,11 @@ CMakeFiles/mov_test.dir/main.cpp.o: ../errorhandling.h
 CMakeFiles/mov_test.dir/main.cpp.o: ../main.cpp
 CMakeFiles/mov_test.dir/main.cpp.o: ../omni.h
 CMakeFiles/mov_test.dir/main.cpp.o: ../tcp.h
+CMakeFiles/mov_test.dir/main.cpp.o: ../utils.h
 
 CMakeFiles/mov_test.dir/omni.cpp.o: ../omni.cpp
 CMakeFiles/mov_test.dir/omni.cpp.o: ../omni.h
+
+CMakeFiles/mov_test.dir/utils.cpp.o: ../utils.cpp
+CMakeFiles/mov_test.dir/utils.cpp.o: ../utils.h
 
