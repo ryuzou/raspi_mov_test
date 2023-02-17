@@ -1,17 +1,16 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "CXX"
   )
-# The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ubuntu/mov_test/main.cpp" "/home/ubuntu/mov_test/cmake-build-debug-remote-host/CMakeFiles/mov_test.dir/main.cpp.o"
-  "/home/ubuntu/mov_test/omni.cpp" "/home/ubuntu/mov_test/cmake-build-debug-remote-host/CMakeFiles/mov_test.dir/omni.cpp.o"
-  "/home/ubuntu/mov_test/utils.cpp" "/home/ubuntu/mov_test/cmake-build-debug-remote-host/CMakeFiles/mov_test.dir/utils.cpp.o"
-  )
-set(CMAKE_CXX_COMPILER_ID "GNU")
 
-# The include file search paths:
-set(CMAKE_CXX_TARGET_INCLUDE_PATH
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/ryuzot/raspi_mov/main.cpp" "CMakeFiles/mov_test.dir/main.cpp.o" "gcc" "CMakeFiles/mov_test.dir/main.cpp.o.d"
+  "/home/ryuzot/raspi_mov/omni.cpp" "CMakeFiles/mov_test.dir/omni.cpp.o" "gcc" "CMakeFiles/mov_test.dir/omni.cpp.o.d"
+  "/home/ryuzot/raspi_mov/utils.cpp" "CMakeFiles/mov_test.dir/utils.cpp.o" "gcc" "CMakeFiles/mov_test.dir/utils.cpp.o.d"
   )
 
 # Targets to which this target links.

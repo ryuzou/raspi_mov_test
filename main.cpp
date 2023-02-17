@@ -14,9 +14,46 @@
 #include <sys/socket.h>
 
 #include <linux/can.h>
+#include <linux/can/raw.h>
 
 using json = nlohmann::json;
 
+short f32tof16(float a){
+    return
+            (*(int*)&a >> 31 & 0b1) << 15 |
+            ((*(int*)&a >> 23 & 0b11111111) - 127 + 15) << 10 |
+            (*(int*)&a >> 13 & 0b1111111111);
+}
+
+float f16tof32(short a){
+    int b =
+            (a >> 15 & 0b1) << 31 |
+            ((a >> 10 & 0b11111) - 15 + 127 ) << 23 |
+            (a & 0b1111111111) << 13;
+    return *(float*)&b;
+}
+
+short convert_byte_to_f16(uint8_t(&bytes)[2]){
+    union {
+        uint8_t bytes[2];
+        short data;
+    }Data{};
+    for (int i = 0; i < 2; ++i) {
+        Data.bytes[i] = bytes[i];
+    }
+    return Data.data;
+}
+
+void convert_f16_to_byte(short data, uint8_t(&bytes)[2]){
+    union {
+        uint8_t bytes[2];
+        short data;
+    }Data{};
+    Data.data = data;
+    for (int i = 0; i < 2; ++i) {
+        bytes[i] = Data.bytes[i];
+    }
+}
 int move_can(){
     //tcp connection setup.
     const char *connected_adder;
@@ -30,15 +67,10 @@ int move_can(){
     int s;
     struct sockaddr_can addr{};
     struct ifreq ifr{};
-    struct can_frame frame0{};
-    struct can_frame frame1{};
-    struct can_frame frame2{};
-    struct can_frame frame3{};
-    frame0.can_id = 0x101;
-    frame1.can_id = 0x102;
-    frame2.can_id = 0x103;
-    frame3.can_id = 0x104;
-    frame0.can_dlc = frame1.can_dlc = frame2.can_dlc = frame3.can_dlc = 8;
+
+    struct can_frame frame{};
+    frame.can_id = 0x101;
+    frame.can_dlc = 8;
 
 
     if ((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0) {
@@ -67,50 +99,41 @@ int move_can(){
 
     // initial connection
     recieveData = tcp.recieve_lines();
-
     while (true) {
         recieveData = tcp.recieve_lines();
         json j = json::parse(recieveData);
 
-        double v1, v2, v3, v4;
-        v1 = double(j["paramaters"]["1"]["axis"]) * double(j["paramaters"]["1"]["ratio"])/100 * double(j["v1"]);
-        v2 = double(j["paramaters"]["2"]["axis"]) * double(j["paramaters"]["2"]["ratio"])/100 * double(j["v2"]);
-        v3 = double(j["paramaters"]["3"]["axis"]) * double(j["paramaters"]["3"]["ratio"])/100 * double(j["v3"]);
-        v4 = double(j["paramaters"]["4"]["axis"]) * double(j["paramaters"]["4"]["ratio"])/100 * double(j["v4"]);
+        double x_val = j["x"];
+        double y_val = j["y"];
+        float v1 = -1 * x_val + 1 * y_val;
+        float v2 = 1 * x_val + 1 * y_val;
+        float v3 = -1 * x_val + 1 * y_val;
+        float v4 = 1 * x_val + 1 * y_val;
 
-        convert_double_to_byte(v1, frame0.data);
-        convert_double_to_byte(v2, frame1.data);
-        convert_double_to_byte(v3, frame2.data);
-        convert_double_to_byte(v4, frame3.data);
-
-
-        while (true){
-            if (write(s, &frame0, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
-                perror("Write frame0");
-                usleep(100);
-            } else{
-                break;
-            }
+        uint8_t _send_bytes[8];
+        uint8_t _tmp_bytes[2];
+        convert_f16_to_byte(v1, _tmp_bytes);
+        for (int i = 0; i < 2; ++i) {
+            _send_bytes[i] = _tmp_bytes[i];
+        }
+        convert_f16_to_byte(v2, _tmp_bytes);
+        for (int i = 0; i < 2; ++i) {
+            _send_bytes[i + 2] = _tmp_bytes[i];
+        }
+        convert_f16_to_byte(v3, _tmp_bytes);
+        for (int i = 0; i < 2; ++i) {
+            _send_bytes[i + 4] = _tmp_bytes[i];
+        }
+        convert_f16_to_byte(v4, _tmp_bytes);
+        for (int i = 0; i < 2; ++i) {
+            _send_bytes[i + 6] = _tmp_bytes[i];
+        }
+        for (int i = 0; i < 8; ++i) {
+            frame.data[i] = _send_bytes[i];
         }
         while (true){
-            if (write(s, &frame1, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
-                perror("Write frame1");
-                usleep(100);
-            } else{
-                break;
-            }
-        }
-        while (true){
-            if (write(s, &frame2, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
-                perror("Write frame2");
-                usleep(100);
-            } else{
-                break;
-            }
-        }
-        while (true){
-            if (write(s, &frame3, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
-                perror("Write frame3");
+            if (write(s, &frame, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
+                perror("Write frame");
                 usleep(100);
             } else{
                 break;
