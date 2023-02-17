@@ -3,6 +3,14 @@
 //
 
 #include "utils.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <linux/can.h>
+#include <linux/can/error.h>
+#include <sys/socket.h> /* for sa_family_t */
+#define hex_asc_upper_hi(x)	hex_asc_upper[((x) & 0xF0) >> 4]
 
 double convert_byte_to_double(uint8_t (&bytes)[8]) {
     union {
@@ -47,4 +55,5 @@ void convert_double_to_byte(double data, uint8_t (&bytes)[8]) {
         bytes[i] = Data.bytes[i];
     }
 }
+
 
